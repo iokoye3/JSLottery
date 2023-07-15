@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Lottery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div id="lotto"> 
+		<h1>Lottery Game</h1>
+		<p id="pointsTotal">Points | <span id="points"></span></p>
+		<br><br><br><br>
+
+		<div id="gameContainer">
+		<p id="instructions">Select 5 numbers and a Powerball number.</p>
+			<div id="lottoNumbers">
+				<input type="number" id="number1" min="1" max="69">
+				<input type="number" id="number2" min="1" max="69">
+				<input type="number" id="number3" min="1" max="69">
+				<input type="number" id="number4" min="1" max="69">
+				<input type="number" id="number5" min="1" max="69">
+				<input type="number" id="powerball" min="1" max="25">
+			</div>
+			<br>
+			<input type="number" id="wager" placeholder="Place Wager">
+			<br><br>
+			<input type="button" onclick="playGame()" value="Play Lottery">
+		</div>
+
+		<div id="resultContainer" style="display: none;">
+			<br>
+			<h2>Winning Numbers:</h2>
+			<p id="winningNumbers"></p>
+			<p id="message"></p>
+			<input type="button" onclick="playAgain()" value="Play Again">
+			<br><br>
+			<input type="button" onclick="reset()" value="Restart Game">
+		</div>
+	</div>
+	
+	<script>
+		let totalPoints = 100; // User's initial points
+		let wageredPoints = 0;
+		let gamePlayed = false; // Variable to ensure one play per turn
+		
+		document.getElementById('points').textContent = totalPoints;
+
+		function getRandomNumber(min, max) {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+		
+		function playGame() {
+			if (gamePlayed) {
+				return;
+			}
+		
+			const numbers = [
+			parseInt(document.getElementById('number1').value),
+			parseInt(document.getElementById('number2').value),
+			parseInt(document.getElementById('number3').value),
+			parseInt(document.getElementById('number4').value),
+			parseInt(document.getElementById('number5').value)
+			];
+			const powerball = parseInt(document.getElementById('powerball').value);
+			const wager = parseInt(document.getElementById('wager').value);
+			
+			// Checks to make sure every input is filled
+			
+			if (numbers.some(isNaN) || isNaN(powerball) || isNaN(wager)) {
+				document.getElementById('message').textContent = 'Please fill all fields.';
+				return;
+			}
+			
+			// Checks to make sure each non-powerball value is unique
+			
+			if ((new Set(numbers)).size !== numbers.length) {
+				document.getElementById('message').textContent = 'Please choose unique numbers.';
+				return;
+			}
+			
+			// Checks to make sure every value is within allowed ranges
+			
+			if (numbers.some(num => num < 1 || num > 69) || powerball < 1 || powerball > 25) {
+				document.getElementById('message').textContent = 'Please choose numbers within the allowed range.';
+				return;
+			}
+			
+			// Checks to make sure each wager is valid
+			
+			if (wager < 10 || wager > totalPoints) {
+				document.getElementById('message').textContent = 'Please place a valid wager.';
+				return;
+			}
+			
+			const winningNumbers = [];
+			while (winningNumbers.length < 5) {
+				const randomNumber = getRandomNumber(1, 69);
+				if (!winningNumbers.includes(randomNumber)) {
+				  winningNumbers.push(randomNumber);
+				}
+			}
+			winningNumbers.sort((a, b) => a - b);
+			const winningPowerball = getRandomNumber(1, 25);
+			
+			const correctNumbers = numbers.filter(num => winningNumbers.includes(num)).length;
+			const correctPowerball = powerball === winningPowerball;
+			
+			const pointsWagered = Math.min(wager, totalPoints);
+			wageredPoints += pointsWagered;
+
+			let pointsWon = 0;
+
+			// Scoring system
+			
+			if (correctPowerball) {
+				if (correctNumbers === 0) {	
+					pointsWon = pointsWagered * 3;
+				} 
+				else if (correctNumbers === 1) {
+					pointsWon = pointsWagered * 15;
+				} 
+				else if (correctNumbers === 2) {
+					pointsWon = pointsWagered * 75;
+				} 
+				else if (correctNumbers === 3) {
+					pointsWon = pointsWagered * 450;
+				} 
+				else if (correctNumbers === 4) {
+					pointsWon = pointsWagered * 3000;
+				} 
+				else if (correctNumbers === 5) {
+					pointsWon = pointsWagered * 30000;
+				}
+			}
+			else {
+				if (correctNumbers === 1) {
+					pointsWon = pointsWagered * 5;
+				} 
+				else if (correctNumbers === 2) {
+					pointsWon = pointsWagered * 25;
+				}
+				else if (correctNumbers === 3) {
+					pointsWon = pointsWagered * 150;
+				}
+				else if (correctNumbers === 4) {
+					pointsWon = pointsWagered * 1000;
+				}
+				else if (correctNumbers === 5) {
+					pointsWon = pointsWagered * 10000;
+				}
+			}
+			
+			totalPoints += pointsWon - pointsWagered;
+			document.getElementById('points').textContent = totalPoints;
+			
+			document.getElementById('winningNumbers').textContent =
+			`${winningNumbers.join('  |  ')} | ${winningPowerball}`;
+
+			if (pointsWon > 0) {
+				document.getElementById('message').textContent = `Congratulations! You won ${pointsWon} points.`;
+			} else {
+				document.getElementById('message').textContent = 'Sorry, you did not win this time. Try Again.';
+			}
+			
+			// Displays results container once clicked
+			
+			document.getElementById('gameContainer').style.display = 'block';
+			document.getElementById('resultContainer').style.display = 'block';
+			
+			// Turn has been played
+			
+			gamePlayed = true;
+		}
+		
+		function playAgain() {
+			gamePlayed = false;
+		
+			// Reset inputs for next turn
+			
+			document.getElementById('gameContainer').style.display = 'block';
+			document.getElementById('resultContainer').style.display = 'none';
+
+			document.getElementById('wager').value = '';
+			document.getElementById('number1').value = '';
+			document.getElementById('number2').value = '';
+			document.getElementById('number3').value = '';
+			document.getElementById('number4').value = '';
+			document.getElementById('number5').value = '';
+			document.getElementById('powerball').value = '';
+
+			document.getElementById('message').textContent = '';
+		}
+		
+		function reset() {
+			gamePlayed = false;
+		
+			// Reset game to default
+			
+			document.getElementById('gameContainer').style.display = 'block';
+			document.getElementById('resultContainer').style.display = 'none';
+				
+			totalPoints = 100;
+			wageredPoints = 0;
+			
+			document.getElementById('points').textContent = totalPoints;
+		
+			document.getElementById('wager').value = '';
+			document.getElementById('number1').value = '';
+			document.getElementById('number2').value = '';
+			document.getElementById('number3').value = '';
+			document.getElementById('number4').value = '';
+			document.getElementById('number5').value = '';
+			document.getElementById('powerball').value = '';
+
+			document.getElementById('message').textContent = '';
+		}
+	</script>
+</body>
+</html>

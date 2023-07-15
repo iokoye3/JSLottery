@@ -1,0 +1,75 @@
+body {
+	background-color: #00FF00;
+	
+}
+#gameContainer {
+	text-align: center;
+}
+#resultContainer {
+	text-align: center;
+}
+#lotto h1 {
+	text-align: center;
+}
+#instructions {
+	text-align: center;
+	font-size: 20px;
+}
+#lottoNumbers {
+	display: flex;	
+	justify-content: center;
+}
+#pointsTotal {
+	float: right;
+	background-color: white;
+	border-radius: 20px;
+	padding: 10px;
+	font-size: 20px;
+}
+#lottoNumbers input[type=number]{
+	border-radius: 20px;
+	border-style: none;
+	margin: 25px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	font-size: 16px;
+}
+#powerball {
+	background-color: gold;
+}
+#gameContainer input[type=number]{
+	border-radius: 20px;
+	border-style: none;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	font-size: 16px;
+}
+#gameContainer input[type=button]{
+	border-radius: 20px;
+	border-style: none;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	font-size: 16px;
+	background-color: white;
+}
+#resultContainer input[type=button]{
+	border-radius: 20px;
+	border-style: none;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	font-size: 16px;
+	background-color: white;
+}
+#gameContainer input[type=button]:hover {
+	color: gold;
+}
+#resultContainer input[type=button]:hover {
+	color: gold;
+}
+#resultContainer p {
+	font-size: 20px;
+}
